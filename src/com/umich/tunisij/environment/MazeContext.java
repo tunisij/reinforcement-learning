@@ -5,10 +5,12 @@ import java.util.stream.Collectors;
 
 public class MazeContext {
 
-    protected Maze maze = new Maze(8, 11);
+    protected Maze maze = new Maze(8, 11, getWallPositions(), EMPTY_PRIOR_VALUE, OBSTACLE_PRIOR_VALUE);
 
     protected static final int GOAL_ROW = 0;
     protected static final int GOAL_COLUMN = 10;
+    private static final double OBSTACLE_PRIOR_VALUE = 0;
+    private static final double EMPTY_PRIOR_VALUE = 1.3;
 
     public MazeContext() {
         setMazeState();
@@ -44,16 +46,16 @@ public class MazeContext {
     }
 
     public void setMazeState() {
-        maze = new Maze(8, 11);
+        maze = new Maze(8, 11, getWallPositions(), EMPTY_PRIOR_VALUE, OBSTACLE_PRIOR_VALUE);
         maze.setGoalPosition(GOAL_ROW, GOAL_COLUMN);
-        setWallPositions();
     }
 
-    public void setWallPositions() {
+    public List<Map.Entry<Integer, Integer>> getWallPositions() {
         List<Map.Entry<Integer, Integer>> wallPositions = new ArrayList<>();
         wallPositions.add(Map.entry(2, 4));
         wallPositions.add(Map.entry(2, 5));
         wallPositions.add(Map.entry(2, 6));
+        wallPositions.add(Map.entry(2, 7));
         wallPositions.add(Map.entry(3, 4));
         wallPositions.add(Map.entry(3, 7));
         wallPositions.add(Map.entry(4, 3));
@@ -61,6 +63,10 @@ public class MazeContext {
         wallPositions.add(Map.entry(4, 7));
         wallPositions.add(Map.entry(5, 6));
         wallPositions.add(Map.entry(5, 7));
-        maze.setWallPositions(wallPositions);
+        return wallPositions;
+    }
+
+    public Node[][] getPrior() {
+        return this.maze.getPrior();
     }
 }

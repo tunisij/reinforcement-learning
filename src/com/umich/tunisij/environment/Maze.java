@@ -6,14 +6,10 @@ import java.util.Map;
 public class Maze {
 
     private Node[][] maze;
+    private Node[][] prior;
 
-    private int startRow;
-    private int startColumn;
-    private int goalRow;
-    private int goalColumn;
-
-    public Maze(final int lengthRow, final int lengthColumn) {
-        initializeMaze(lengthRow, lengthColumn);
+    public Maze(final int lengthRow, final int lengthColumn, List<Map.Entry<Integer, Integer>> wallPositions, double emptyPriorValue, double obstaclePriorValue) {
+        initializeMaze(lengthRow, lengthColumn, wallPositions, emptyPriorValue, obstaclePriorValue);
     }
 
     public Node[][] getMaze() {
@@ -39,8 +35,9 @@ public class Maze {
         return sb.toString();
     }
 
-    protected void initializeMaze(int lengthRow, int lengthColumn) {
+    protected void initializeMaze(int lengthRow, int lengthColumn, List<Map.Entry<Integer, Integer>> wallPositions, double emptyPriorValue, double obstaclePriorValue) {
         maze = new Node[lengthRow][lengthColumn];
+        prior = new Node[lengthRow][lengthColumn];
 
         for (int row = 0; row < lengthRow; row++) {
             for (int column = 0; column < lengthColumn; column++) {
@@ -48,11 +45,27 @@ public class Maze {
                 maze[row][column].setValue("[]");
             }
         }
+
+        setWallPositions(wallPositions);
+
+        for (int row = 0; row < lengthRow; row++) {
+            for (int column = 0; column < lengthColumn; column++) {
+                if (maze[row][column].getValue().equals("##")) {
+                    prior[row][column] = new Node(Map.entry(row, column));
+                    prior[row][column].setValue(Double.toString(obstaclePriorValue));
+                } else {
+                    prior[row][column] = new Node(Map.entry(row, column));
+                    prior[row][column].setValue(Double.toString(emptyPriorValue));
+                }
+            }
+        }
+    }
+
+    protected Node[][] getPrior() {
+        return prior;
     }
 
     public void setGoalPosition(int row, int column) {
-        goalRow = row;
-        goalColumn = column;
         maze[row][column].setValue("GG");
     }
 
