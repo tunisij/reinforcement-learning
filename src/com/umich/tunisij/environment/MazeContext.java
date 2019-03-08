@@ -10,7 +10,7 @@ public class MazeContext {
     protected static final int GOAL_ROW = 0;
     protected static final int GOAL_COLUMN = 10;
     private static final double OBSTACLE_PRIOR_VALUE = 0;
-    private static final double EMPTY_PRIOR_VALUE = 10.0;
+    private static final double EMPTY_PRIOR_VALUE = .013;
     private int obstacleCount = 0;
 
     public MazeContext() {

@@ -10,6 +10,7 @@ public class Main {
         MazeContext mazeContext = new MazeContext();
         Robot robot = new Robot(mazeContext);
 
+        System.out.println(robot.getPosterior());
         robot.sense(false, false, false, false);
         System.out.println(robot.getPosterior());
         robot.move(Direction.NORTH);
