@@ -37,14 +37,6 @@ public class MazeContext {
         return adjacentPositions;
     }
 
-    public Node getNode(Map.Entry<Integer, Integer> position) {
-        return maze.getNode(position);
-    }
-
-    public String toString() {
-        return maze.toString();
-    }
-
     public void setMazeState() {
         maze = new Maze(8, 11, getWallPositions(), EMPTY_PRIOR_VALUE, OBSTACLE_PRIOR_VALUE);
         maze.setGoalPosition(GOAL_ROW, GOAL_COLUMN);
@@ -64,6 +56,32 @@ public class MazeContext {
         wallPositions.add(Map.entry(5, 6));
         wallPositions.add(Map.entry(5, 7));
         return wallPositions;
+    }
+
+    public void print(Node[][] nodes) {
+        StringBuilder sb = new StringBuilder();
+        for (int row = 0; row < nodes.length; row++) {
+            for (int column = 0; column < nodes[row].length; column++) {
+                sb.append(nodes[row][column].getValue() + "\t");
+            }
+            sb.append("\n");
+        }
+        System.out.println(sb.toString());
+    }
+
+    public void print(double[][] nodes) {
+        StringBuilder sb = new StringBuilder();
+        for (int row = 0; row < nodes.length; row++) {
+            for (int column = 0; column < nodes[row].length; column++) {
+                sb.append(nodes[row][column] + "\t");
+            }
+            sb.append("\n");
+        }
+        System.out.println(sb.toString());
+    }
+
+    public Node[][] getMaze() {
+        return this.maze.getMaze();
     }
 
     public Node[][] getPrior() {
