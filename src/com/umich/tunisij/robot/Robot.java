@@ -6,14 +6,19 @@ import com.umich.tunisij.environment.Node;
 
 public class Robot {
 
+    private MazeContext mazeContext;
     private Node[][] maze;
-    private Node[][] prior;
+    private Node[][] posterior;
     private double[][] transitionMatrixMovingNorth;
     private double[][] transitionMatrixMovingEast;
 
+    private static final double FALSE_POSITIVE_SENSOR_RATE = 5.0;
+    private static final double POSITIVE_SENSOR_RATE = 90.0;
+
     public Robot(MazeContext mazeContext) {
+        this.mazeContext = mazeContext;
         this.maze = mazeContext.getMaze();
-        this.prior = mazeContext.getPrior();
+        this.posterior = mazeContext.getPrior();
 
         setTransitionMatrixMovingNorth();
         setTransitionMatrixMovingEast();
@@ -37,10 +42,9 @@ public class Robot {
     }
 
     private void setTransitionMatrixMovingNorth() {
-        transitionMatrixMovingNorth = new double[prior.length * prior[0].length][prior.length * prior[0].length];
+        transitionMatrixMovingNorth = new double[posterior.length * posterior[0].length][posterior.length * posterior[0].length];
         initializeTransitionMatrix(transitionMatrixMovingNorth);
 
-        //iterates 88 times
         for (int i = 0; i < transitionMatrixMovingNorth.length; i++) {
             setTransitionMatrixMovingNorthRowForNode(i); //for each position in transition matrix, set index
         }
@@ -58,19 +62,18 @@ public class Robot {
         int westPosition = west.getPosition().getKey() * maze[0].length + west.getPosition().getValue();
         int northPosition = north.getPosition().getKey() * maze[0].length + north.getPosition().getValue();
 
-        transitionMatrixMovingNorth[rowIndex][eastPosition] += 0.1;
-        transitionMatrixMovingNorth[rowIndex][westPosition] += 0.1;
-        transitionMatrixMovingNorth[rowIndex][northPosition] += 0.8;
+        transitionMatrixMovingNorth[rowIndex][eastPosition] += 10.0;
+        transitionMatrixMovingNorth[rowIndex][westPosition] += 10.0;
+        transitionMatrixMovingNorth[rowIndex][northPosition] += 80.0;
     }
 
 
 
 
     private void setTransitionMatrixMovingEast() {
-        transitionMatrixMovingEast = new double[prior.length * prior[0].length][prior.length * prior[0].length];
+        transitionMatrixMovingEast = new double[posterior.length * posterior[0].length][posterior.length * posterior[0].length];
         initializeTransitionMatrix(transitionMatrixMovingEast);
 
-        //iterates 88 times
         for (int i = 0; i < transitionMatrixMovingEast.length; i++) {
             setTransitionMatrixMovingEastRowForNode(i); //for each position in transition matrix, set index
         }
@@ -88,13 +91,46 @@ public class Robot {
         int southPosition = south.getPosition().getKey() * maze[0].length + south.getPosition().getValue();
         int eastPosition = east.getPosition().getKey() * maze[0].length + east.getPosition().getValue();
 
-        transitionMatrixMovingEast[rowIndex][northPosition] += 0.1;
-        transitionMatrixMovingEast[rowIndex][southPosition] += 0.1;
-        transitionMatrixMovingEast[rowIndex][eastPosition] += 0.8;
+        transitionMatrixMovingEast[rowIndex][northPosition] += 10.0;
+        transitionMatrixMovingEast[rowIndex][southPosition] += 10.0;
+        transitionMatrixMovingEast[rowIndex][eastPosition] += 80.0;
     }
 
     public void sense(boolean west, boolean north, boolean east, boolean south) {
+        filter(true);
+        System.out.println(getPosterior());
+        filter(north);
+        System.out.println(getPosterior());
+        filter(east);
+        System.out.println(getPosterior());
+        filter(south);
+        System.out.println(getPosterior());
+    }
 
+    private boolean isObstacle(Direction direction) {
+        return false;
+    }
+
+    private void filter(boolean sensed) {
+        for (int i = 0; i < posterior.length; i++) {
+            for (int j = 0; j < posterior[i].length; j++) {
+                if (posterior[i][j].getValue().equals("0.0")) {
+                    return;
+                }
+
+                //make sure to look at inverses
+                double noObstacle = .05 * (Double.parseDouble(posterior[i][j].getValue()) / 100);
+                double hasObstacle = .9 * (Double.parseDouble(posterior[i][j].getValue()) / 100);
+
+                double value = 0.0;
+                if (sensed) {
+                    value = hasObstacle / ((noObstacle * mazeContext.getNonObstacleCount()) + (hasObstacle * mazeContext.getObstacleCount()));
+                } else {
+                    value = noObstacle / ((noObstacle * mazeContext.getNonObstacleCount()) + (hasObstacle * mazeContext.getObstacleCount()));
+                }
+                posterior[i][j].setValue(value + "");
+            }
+        }
     }
 
     public void move(Direction direction) {
@@ -103,9 +139,9 @@ public class Robot {
 
     public String getPosterior() {
         StringBuilder sb = new StringBuilder();
-        for (int row = 0; row < this.prior.length; row++) {
-            for (int column = 0; column < this.prior[row].length; column++) {
-                sb.append(this.prior[row][column].getValue() + "\t");
+        for (int row = 0; row < this.posterior.length; row++) {
+            for (int column = 0; column < this.posterior[row].length; column++) {
+                sb.append(this.posterior[row][column].getValue() + "\t");
             }
             sb.append("\n");
         }
@@ -113,8 +149,8 @@ public class Robot {
     }
 
     private void initializeTransitionMatrix(double[][] transitionMatrix) {
-        for (int i = 0; i < prior.length; i++) {
-            for (int j = 0; j < prior[i].length; j++) {
+        for (int i = 0; i < posterior.length; i++) {
+            for (int j = 0; j < posterior[i].length; j++) {
                 transitionMatrix[i][j] = 0.0;
             }
         }

@@ -10,7 +10,8 @@ public class MazeContext {
     protected static final int GOAL_ROW = 0;
     protected static final int GOAL_COLUMN = 10;
     private static final double OBSTACLE_PRIOR_VALUE = 0;
-    private static final double EMPTY_PRIOR_VALUE = 1.3;
+    private static final double EMPTY_PRIOR_VALUE = 10.0;
+    private int obstacleCount = 0;
 
     public MazeContext() {
         setMazeState();
@@ -55,6 +56,8 @@ public class MazeContext {
         wallPositions.add(Map.entry(4, 7));
         wallPositions.add(Map.entry(5, 6));
         wallPositions.add(Map.entry(5, 7));
+
+        obstacleCount = wallPositions.size();
         return wallPositions;
     }
 
@@ -67,6 +70,14 @@ public class MazeContext {
             sb.append("\n");
         }
         System.out.println(sb.toString());
+    }
+
+    public int getObstacleCount() {
+        return 3;//obstacleCount;
+    }
+
+    public int getNonObstacleCount() {
+        return 7;//(maze.getLength() * maze.getHeight()) - getObstacleCount();
     }
 
     public void print(double[][] nodes) {
