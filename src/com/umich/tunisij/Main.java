@@ -12,26 +12,26 @@ public class Main {
 
         System.out.println(robot.getPosterior());
         robot.sense(false, false, false, false);
-        System.out.println(robot.getPosterior());
-        robot.move(Direction.NORTH);
-        System.out.println(robot.getPosterior());
-        robot.sense(false, false, false, false);
-        System.out.println(robot.getPosterior());
-        robot.move(Direction.NORTH);
-        System.out.println(robot.getPosterior());
-        robot.sense(false, false, true, false);
-        System.out.println(robot.getPosterior());
-        robot.move(Direction.NORTH);
-        System.out.println(robot.getPosterior());
-        robot.sense(false, false, false, false);
-        System.out.println(robot.getPosterior());
-        robot.move(Direction.EAST);
-        System.out.println(robot.getPosterior());
-        robot.sense(false, false, true, true);
-        System.out.println(robot.getPosterior());
-        robot.move(Direction.NORTH);
-        System.out.println(robot.getPosterior());
-        robot.sense(false, false, true, false);
-        System.out.println(robot.getPosterior());
+//        System.out.println(robot.getPosterior());
+//        robot.move(Direction.NORTH);
+//        System.out.println(robot.getPosterior());
+//        robot.sense(false, false, false, false);
+//        System.out.println(robot.getPosterior());
+//        robot.move(Direction.NORTH);
+//        System.out.println(robot.getPosterior());
+//        robot.sense(false, false, true, false);
+//        System.out.println(robot.getPosterior());
+//        robot.move(Direction.NORTH);
+//        System.out.println(robot.getPosterior());
+//        robot.sense(false, false, false, false);
+//        System.out.println(robot.getPosterior());
+//        robot.move(Direction.EAST);
+//        System.out.println(robot.getPosterior());
+//        robot.sense(false, false, true, true);
+//        System.out.println(robot.getPosterior());
+//        robot.move(Direction.NORTH);
+//        System.out.println(robot.getPosterior());
+//        robot.sense(false, false, true, false);
+//        System.out.println(robot.getPosterior());
     }
 }
