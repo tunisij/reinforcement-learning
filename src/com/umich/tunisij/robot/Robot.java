@@ -69,9 +69,9 @@ public class Robot {
         int westPosition = west.getPosition().getKey() * maze[0].length + west.getPosition().getValue();
         int northPosition = north.getPosition().getKey() * maze[0].length + north.getPosition().getValue();
 
-        transitionMatrixMovingNorth[rowIndex][eastPosition] += .10;
-        transitionMatrixMovingNorth[rowIndex][westPosition] += .10;
-        transitionMatrixMovingNorth[rowIndex][northPosition] += .80;
+        transitionMatrixMovingNorth[rowIndex][eastPosition] += .1;
+        transitionMatrixMovingNorth[rowIndex][westPosition] += .1;
+        transitionMatrixMovingNorth[rowIndex][northPosition] += .8;
     }
 
     private void setTransitionMatrixMovingEast() {
@@ -95,9 +95,9 @@ public class Robot {
         int southPosition = south.getPosition().getKey() * maze[0].length + south.getPosition().getValue();
         int eastPosition = east.getPosition().getKey() * maze[0].length + east.getPosition().getValue();
 
-        transitionMatrixMovingEast[rowIndex][northPosition] += 10.0;
-        transitionMatrixMovingEast[rowIndex][southPosition] += 10.0;
-        transitionMatrixMovingEast[rowIndex][eastPosition] += 80.0;
+        transitionMatrixMovingEast[rowIndex][northPosition] += .1;
+        transitionMatrixMovingEast[rowIndex][southPosition] += .1;
+        transitionMatrixMovingEast[rowIndex][eastPosition] += .8;
     }
 
     private boolean hasObstacle(int i, int j, Direction direction) {
