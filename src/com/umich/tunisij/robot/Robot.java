@@ -232,7 +232,13 @@ public class Robot {
         StringBuilder sb = new StringBuilder();
         for (int row = 0; row < this.posterior.length; row++) {
             for (int column = 0; column < this.posterior[row].length; column++) {
-                sb.append((new BigDecimal(this.posterior[row][column].getValue()).multiply(new BigDecimal(100))).setScale(2, RoundingMode.HALF_UP) + "\t");
+                BigDecimal bd = new BigDecimal(this.posterior[row][column].getValue()).multiply(new BigDecimal(100));
+                if (bd.toString().split("\\.")[0].length() == 2) {
+                    bd = bd.setScale(1, RoundingMode.HALF_UP);
+                } else {
+                    bd = bd.setScale(2, RoundingMode.HALF_UP);
+                }
+                sb.append(bd + "\t");
             }
             sb.append("\n");
         }
