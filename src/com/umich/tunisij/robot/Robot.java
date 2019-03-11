@@ -69,9 +69,9 @@ public class Robot {
         int westPosition = west.getPosition().getKey() * maze[0].length + west.getPosition().getValue();
         int northPosition = north.getPosition().getKey() * maze[0].length + north.getPosition().getValue();
 
-        transitionMatrixMovingNorth[rowIndex][eastPosition] += 10.0;
-        transitionMatrixMovingNorth[rowIndex][westPosition] += 10.0;
-        transitionMatrixMovingNorth[rowIndex][northPosition] += 80.0;
+        transitionMatrixMovingNorth[rowIndex][eastPosition] += .10;
+        transitionMatrixMovingNorth[rowIndex][westPosition] += .10;
+        transitionMatrixMovingNorth[rowIndex][northPosition] += .80;
     }
 
     private void setTransitionMatrixMovingEast() {
@@ -181,16 +181,51 @@ public class Robot {
                 posterior[i][j].setValue(Double.toString(s1z1[i][j] / denominator));
             }
         }
-
-        System.out.println(getPosterior());
     }
 
     private boolean isObstacle(Direction direction) {
         return false;
     }
 
-    public void move(Direction direction) {
+    private double[][] multiplyMatrices(double[][] firstMatrix, double[][] secondMatrix) {
+        double[][] product = new double[firstMatrix.length][secondMatrix[0].length];
+        for(int i = 0; i < firstMatrix.length; i++) {
+            for (int j = 0; j < secondMatrix[0].length; j++) {
+                for (int k = 0; k < firstMatrix[0].length; k++) {
+                    product[i][j] += firstMatrix[i][k] * secondMatrix[k][j];
+                }
+            }
+        }
+        return product;
+    }
 
+    public double[][] flattenMatrix(Node[][] matrix) {
+        double[][] convertedMatrix = new double[1][transitionMatrixMovingNorth.length];
+
+        int counter = 0;
+        for (int i = 0; i < posterior.length; i++) {
+            for (int j = 0; j < posterior[i].length; j++) {
+                convertedMatrix[0][counter++] = Double.parseDouble(posterior[i][j].getValue());
+            }
+        }
+        return convertedMatrix;
+    }
+
+    public void setPosteriorToRestructuredMatrix(double[][] matrix) {
+        int counter = 0;
+        for (int i = 0; i < posterior.length; i++) {
+            for (int j = 0; j < posterior[i].length; j++) {
+                posterior[i][j].setValue(String.format("%.12f", matrix[0][counter++]));
+            }
+        }
+    }
+
+    public void move(Direction direction) {
+        if (direction.equals(Direction.NORTH)) {
+            setPosteriorToRestructuredMatrix(multiplyMatrices(flattenMatrix(posterior), transitionMatrixMovingNorth));
+        } else {
+            setPosteriorToRestructuredMatrix(multiplyMatrices(flattenMatrix(posterior), transitionMatrixMovingEast));
+        }
     }
 
     public String getPosterior() {
