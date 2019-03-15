@@ -29,9 +29,6 @@ public class Robot {
 
         setTransitionMatrixMovingNorth();
         setTransitionMatrixMovingEast();
-
-        mazeContext.print(transitionMatrixMovingNorth);
-        mazeContext.print(transitionMatrixMovingEast);
     }
 
     //returns itself if blocked
@@ -183,10 +180,6 @@ public class Robot {
         }
     }
 
-    private boolean isObstacle(Direction direction) {
-        return false;
-    }
-
     private double[][] multiplyMatrices(double[][] firstMatrix, double[][] secondMatrix) {
         double[][] product = new double[firstMatrix.length][secondMatrix[0].length];
         for(int i = 0; i < firstMatrix.length; i++) {
@@ -251,6 +244,10 @@ public class Robot {
                 transitionMatrix[i][j] = 0.0;
             }
         }
+    }
+
+    public void smooth() {
+
     }
 }
 

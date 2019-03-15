@@ -61,36 +61,6 @@ public class MazeContext {
         return wallPositions;
     }
 
-    public void print(Node[][] nodes) {
-        StringBuilder sb = new StringBuilder();
-        for (int row = 0; row < nodes.length; row++) {
-            for (int column = 0; column < nodes[row].length; column++) {
-                sb.append(nodes[row][column].getValue() + "\t");
-            }
-            sb.append("\n");
-        }
-        System.out.println(sb.toString());
-    }
-
-    public int getObstacleCount() {
-        return 3;//obstacleCount;
-    }
-
-    public int getNonObstacleCount() {
-        return 7;//(maze.getLength() * maze.getHeight()) - getObstacleCount();
-    }
-
-    public void print(double[][] nodes) {
-        StringBuilder sb = new StringBuilder();
-        for (int row = 0; row < nodes.length; row++) {
-            for (int column = 0; column < nodes[row].length; column++) {
-                sb.append(nodes[row][column] + "\t");
-            }
-            sb.append("\n");
-        }
-        System.out.println(sb.toString());
-    }
-
     public Node[][] getMaze() {
         return this.maze.getMaze();
     }
