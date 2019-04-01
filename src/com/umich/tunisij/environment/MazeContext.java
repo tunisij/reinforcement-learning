@@ -1,46 +1,62 @@
 package com.umich.tunisij.environment;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class MazeContext {
 
-    protected Maze maze = new Maze(8, 11, getWallPositions(), EMPTY_PRIOR_VALUE, OBSTACLE_PRIOR_VALUE);
+    protected Maze maze = new Maze(ROWS, COLUMNS, getWallPositions());
 
+    private static final int ROWS = 8;
+    private static final int COLUMNS = 11;
     protected static final int GOAL_ROW = 0;
     protected static final int GOAL_COLUMN = 10;
-    private static final double OBSTACLE_PRIOR_VALUE = 0;
-    private static final double EMPTY_PRIOR_VALUE = .013;
-    private int obstacleCount = 0;
 
     public MazeContext() {
         setMazeState();
     }
 
-    public List<Map.Entry<Integer, Integer>> getAdjacentPositions(Map.Entry<Integer, Integer> node) {
-        List<Map.Entry<Integer, Integer>> adjacentPositions = new ArrayList<>();
-        adjacentPositions.add(Map.entry(node.getKey(), node.getValue() - 1)); //west
-        adjacentPositions.add(Map.entry(node.getKey() - 1, node.getValue())); //north
-        adjacentPositions.add(Map.entry(node.getKey(), node.getValue() + 1)); //east
-        adjacentPositions.add(Map.entry(node.getKey() + 1, node.getValue())); //south
-
-
-        adjacentPositions = adjacentPositions.stream().filter(position -> {
-            if (position.getKey() < 0 || position.getValue() < 0 || position.getKey() >= maze.getHeight() || position.getValue() >= maze.getLength()) {
-                return false;
-            }
-            String value = maze.getMaze()[position.getKey()][position.getValue()].getValue();
-            if (value.equals("[]") || value.equals("GG")) {
-                return true;
-            }
-            return false;
-        }).collect(Collectors.toList());
-        return adjacentPositions;
-    }
+//    public List<Map.Entry<Integer, Integer>> getAdjacentPositions(Map.Entry<Integer, Integer> node) {
+//        List<Map.Entry<Integer, Integer>> adjacentPositions = new ArrayList<>();
+//        adjacentPositions.add(Map.entry(node.getKey(), node.getValue() - 1)); //west
+//        adjacentPositions.add(Map.entry(node.getKey() - 1, node.getValue())); //north
+//        adjacentPositions.add(Map.entry(node.getKey(), node.getValue() + 1)); //east
+//        adjacentPositions.add(Map.entry(node.getKey() + 1, node.getValue())); //south
+//
+//
+//        adjacentPositions = adjacentPositions.stream().filter(position -> {
+//            if (position.getKey() < 0 || position.getValue() < 0 || position.getKey() >= maze.getHeight() || position.getValue() >= maze.getLength()) {
+//                return false;
+//            }
+//            String value = maze.getMaze()[position.getKey()][position.getValue()].getValue();
+//            if (value.equals("[]") || value.equals("GG")) {
+//                return true;
+//            }
+//            return false;
+//        }).collect(Collectors.toList());
+//        return adjacentPositions;
+//    }
 
     public void setMazeState() {
-        maze = new Maze(8, 11, getWallPositions(), EMPTY_PRIOR_VALUE, OBSTACLE_PRIOR_VALUE);
+        maze = new Maze(ROWS, COLUMNS, getWallPositions());
         maze.setGoalPosition(GOAL_ROW, GOAL_COLUMN);
+        setSource();
+    }
+
+    public void setSource() {
+        boolean isSourceSet = false;
+
+        while (!isSourceSet) {
+            int row = ThreadLocalRandom.current().nextInt(0, ROWS);
+            int column = ThreadLocalRandom.current().nextInt(0, COLUMNS);
+
+            Node node = maze.getMaze()[row][column];
+            if (!node.isWall() && !node.isGoal()) {
+                node.setSource(true);
+                isSourceSet = true;
+            }
+        }
     }
 
     public List<Map.Entry<Integer, Integer>> getWallPositions() {
@@ -57,15 +73,23 @@ public class MazeContext {
         wallPositions.add(Map.entry(5, 6));
         wallPositions.add(Map.entry(5, 7));
 
-        obstacleCount = wallPositions.size();
         return wallPositions;
     }
 
     public Node[][] getMaze() {
-        return this.maze.getMaze();
+        return maze.getMaze();
     }
 
-    public Node[][] getPrior() {
-        return this.maze.getPrior();
+    public String getOptimalAction() {
+        return maze.getOptimalAction();
     }
+
+    public String getQValues() {
+        return maze.getQValues();
+    }
+
+    public String getAccessFrequency() {
+        return maze.getAccessFrequency();
+    }
+
 }
