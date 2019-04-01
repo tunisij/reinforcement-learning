@@ -1,4 +1,11 @@
 package com.umich.tunisij.algorithms;
 
-public class QLearning {
+import com.umich.tunisij.environment.MazeContext;
+
+public class QLearning extends EGreedy implements Algorithm {
+
+    @Override
+    public void run(MazeContext mazeContext) {
+
+    }
 }

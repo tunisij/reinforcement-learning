@@ -1,7 +1,10 @@
 package com.umich.tunisij.environment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Node {
 
@@ -73,15 +76,22 @@ public class Node {
         return action;
     }
 
-    private Direction getOptimalDirection() {
-        Map.Entry<Direction, String> maxEntry = null;
+    public Direction getOptimalDirection() {
+        Integer maxValue = null;
 
         for (Map.Entry<Direction, String> entry : qValueMap.entrySet()) {
-            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
-                maxEntry = entry;
+            if (maxValue == null || Integer.parseInt(entry.getValue()) > maxValue) {
+                maxValue = Integer.parseInt(entry.getValue());
             }
         }
-        return maxEntry.getKey();
+
+        List<Map.Entry<Direction, String>> maxEntries = new ArrayList<>();
+        for (Map.Entry<Direction, String> entry : qValueMap.entrySet()) {
+            if (Integer.parseInt(entry.getValue()) == maxValue) {
+                maxEntries.add(entry);
+            }
+        }
+        return maxEntries.get(ThreadLocalRandom.current().nextInt(0, maxEntries.size())).getKey();
     }
 
     public void setGoal(boolean goal) {
