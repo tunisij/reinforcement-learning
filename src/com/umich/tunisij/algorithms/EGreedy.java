@@ -10,7 +10,7 @@ public class EGreedy {
 
     public static final double OPTIMAL_ACTION = 95;
 
-    public Direction move(MazeContext mazeContext, Map.Entry<Integer, Integer> position) {
+    public Direction chooseAction(MazeContext mazeContext, Map.Entry<Integer, Integer> position) {
         if (ThreadLocalRandom.current().nextInt(1, 101) > OPTIMAL_ACTION) {
             int random = ThreadLocalRandom.current().nextInt(0, 4);
             return random == 0 ? Direction.NORTH : random == 1 ? Direction.EAST : random == 2 ? Direction.WEST : random == 3 ? Direction.SOUTH : null;
