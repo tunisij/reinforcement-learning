@@ -27,11 +27,12 @@ public class Maze {
     }
 
     public String getQValues() {
-        int maxStringLength = 10;
+        int maxStringLength = 15;
         StringBuilder sb = new StringBuilder();
         for (int row = 0; row < maze.length; row++) {
             for (int column = 0; column < maze[row].length; column++) {
                 String qValue = maze[row][column].getQValue(Direction.NORTH);
+                qValue = qValue.substring(0, Math.min(5, qValue.length()));
                 int leftPadding = ((maxStringLength - qValue.length()) / 2) + 1;
                 sb.append(String.format("%-" + maxStringLength + "s", String.format("%" + leftPadding + "s", qValue)) + "\t");
             }
@@ -39,7 +40,9 @@ public class Maze {
             sb.append("\n");
 
             for (int column = 0; column < maze[row].length; column++) {
-                String qValue = maze[row][column].getQValue(Direction.WEST)+ " " + maze[row][column].getQValue(Direction.EAST);
+                String westQValue = maze[row][column].getQValue(Direction.WEST);
+                String eastQValue = maze[row][column].getQValue(Direction.EAST);
+                String qValue = westQValue.substring(0, Math.min(5, westQValue.length())) + " " + eastQValue.substring(0, Math.min(5, eastQValue.length()));
                 int leftPadding = ((maxStringLength - qValue.length()) / 2) + 3;
                 sb.append(String.format("%-" + maxStringLength + "s", String.format("%" + leftPadding + "s", qValue)) + "\t");
             }
@@ -48,6 +51,7 @@ public class Maze {
 
             for (int column = 0; column < maze[row].length; column++) {
                 String qValue = maze[row][column].getQValue(Direction.SOUTH);
+                qValue = qValue.substring(0, Math.min(5, qValue.length()));
                 int leftPadding = ((maxStringLength - qValue.length()) / 2) + 1;
                 sb.append(String.format("%-" + maxStringLength + "s", String.format("%" + leftPadding + "s", qValue)) + "\t");
             }
@@ -59,7 +63,7 @@ public class Maze {
     }
 
     public String getAccessFrequency() {
-        int maxStringLength = 10;
+        int maxStringLength = 15;
         StringBuilder sb = new StringBuilder();
         for (int row = 0; row < maze.length; row++) {
             for (int column = 0; column < maze[row].length; column++) {

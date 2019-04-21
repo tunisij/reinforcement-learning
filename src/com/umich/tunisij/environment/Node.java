@@ -14,6 +14,7 @@ public class Node {
     private boolean isGoal = false;
     private boolean isWall = false;
     private boolean isSource = false;
+    private Direction currentOptimalDirection;
 
     public Node(Map.Entry<Integer, Integer> position) {
         this.position = position;
@@ -31,7 +32,21 @@ public class Node {
 
     public void setQValue(Direction direction, String value) {
         qValueMap.put(direction, value);
-        accessFrequency.put(direction, accessFrequency.get(direction) + 1);
+    }
+
+    public double getMaxQValue() {
+        Double maxQValue = null;
+
+        for (String qValue : qValueMap.values()) {
+            if (maxQValue == null || Double.compare(Double.parseDouble(qValue), maxQValue) == 1) {
+                maxQValue = Double.parseDouble(qValue);
+            }
+        }
+        return maxQValue;
+    }
+
+    public double getQValueAsDouble(Direction direction) {
+        return Double.parseDouble(qValueMap.get(direction));
     }
 
     public String getQValue(Direction direction) {
@@ -46,6 +61,12 @@ public class Node {
         accessFrequency.put(direction, frequency);
     }
 
+    public void incrementAccessFrequency(Direction direction) {
+        if (!isGoal) {
+            accessFrequency.put(direction, "" + (Integer.parseInt(accessFrequency.get(direction)) + 1));
+        }
+    }
+
     public Map.Entry<Integer, Integer> getPosition() {
         return position;
     }
@@ -54,9 +75,9 @@ public class Node {
         return qValueMap.toString();
     }
 
-    public String getOptimalAction() {
+    protected String getOptimalAction() {
         String action;
-        Direction direction = getOptimalDirection();
+        Direction direction = getOptimalDirection(false);
 
         if (isSource) {
             action = "SSSS";
@@ -76,22 +97,32 @@ public class Node {
         return action;
     }
 
-    public Direction getOptimalDirection() {
-        Integer maxValue = null;
+    public Direction getOptimalDirection(boolean updateOptimal) {
+        if (!updateOptimal && currentOptimalDirection != null) {
+            return currentOptimalDirection;
+        }
+
+        double maxValue = -999999;
 
         for (Map.Entry<Direction, String> entry : qValueMap.entrySet()) {
-            if (maxValue == null || Integer.parseInt(entry.getValue()) > maxValue) {
-                maxValue = Integer.parseInt(entry.getValue());
+            if (Double.compare(Double.parseDouble(entry.getValue()), maxValue) == 1) {
+                maxValue = Double.parseDouble(entry.getValue());
             }
         }
 
         List<Map.Entry<Direction, String>> maxEntries = new ArrayList<>();
         for (Map.Entry<Direction, String> entry : qValueMap.entrySet()) {
-            if (Integer.parseInt(entry.getValue()) == maxValue) {
+            if (Double.compare(Double.parseDouble(entry.getValue()), maxValue) == 0) {
                 maxEntries.add(entry);
             }
         }
-        return maxEntries.get(ThreadLocalRandom.current().nextInt(0, maxEntries.size())).getKey();
+
+        if (maxEntries.size() == 0) {
+            int random = ThreadLocalRandom.current().nextInt(0, 4);
+            return random == 0 ? Direction.NORTH : random == 1 ? Direction.EAST : random == 2 ? Direction.SOUTH : Direction.WEST;
+        }
+        currentOptimalDirection = maxEntries.get(ThreadLocalRandom.current().nextInt(0, maxEntries.size())).getKey();
+        return currentOptimalDirection;
     }
 
     public void setGoal(boolean goal) {

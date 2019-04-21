@@ -15,7 +15,7 @@ public class EGreedy {
             int random = ThreadLocalRandom.current().nextInt(0, 4);
             return random == 0 ? Direction.NORTH : random == 1 ? Direction.EAST : random == 2 ? Direction.WEST : random == 3 ? Direction.SOUTH : null;
         }
-        return mazeContext.getMaze()[position.getKey()][position.getValue()].getOptimalDirection();
+        return mazeContext.getMaze()[position.getKey()][position.getValue()].getOptimalDirection(true);
     }
 
 }
